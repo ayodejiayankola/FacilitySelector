@@ -89,7 +89,7 @@ class FacilityViewController: UIViewController, UITableViewDataSource, UITableVi
 		}
 	}
 	
-	// Mark:- Alert to show error in displaying data
+	// MARK: - Alert to show error in displaying data
 	
 	private func showErrorAlert(_ error: Error) {
 		let alertController = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: .alert)
@@ -99,7 +99,7 @@ class FacilityViewController: UIViewController, UITableViewDataSource, UITableVi
 		present(alertController, animated: true, completion: nil)
 	}
 	
-	// Mark:- Alert to manage confilicting exclusion options
+	// MARK: - Alert to manage confilicting exclusion options
 	
 	private func showAlert(for conflictingOptions: [Exclusion]) {
 		guard let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
