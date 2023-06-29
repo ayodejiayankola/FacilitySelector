@@ -4,7 +4,6 @@
 //
 //  Created by Ayodeji Ayankola on 29/06/2023.
 //
-
 import XCTest
 @testable import FacilitySelector
 
@@ -14,11 +13,8 @@ class FacilityViewControllerTests: XCTestCase {
 
 		override func setUp() {
 				super.setUp()
-				// Create an instance of the mock facility view model
 				viewModel = MockFacilityViewModel()
-				// Create an instance of the FacilityViewController with the mock view model
 				viewController = FacilityViewController(viewModel: viewModel)
-				// Load the view hierarchy of the view controller
 				viewController.loadViewIfNeeded()
 		}
 
@@ -36,13 +32,13 @@ class FacilityViewControllerTests: XCTestCase {
 				viewController.fetchFacilities()
 
 				// Then
-				XCTAssertNotNil(viewController.facilityData)
-				XCTAssertTrue(viewModel.fetchFacilitiesCalled)
-				XCTAssertEqual(tableView?.numberOfSections, viewController.facilityData?.facilities.count)
-				XCTAssertTrue(tableView?.numberOfRows(inSection: 0) == viewModel.facilityData?.facilities[0].options.count)
+				XCTAssertNotNil(viewController.viewModel.facilities)
+				XCTAssertNil(viewController.viewModel.conflictingOptions)
+				XCTAssertTrue(tableView?.numberOfSections == viewController.viewModel.facilities.count)
+				XCTAssertTrue(tableView?.numberOfRows(inSection: 0) == viewController.viewModel.facilities[0].options.count)
 		}
 
-		func testToggleOptionSelection() {
+		func testHandleOptionSelection() {
 				// Given
 				let option = Option(name: "Apartment", icon: "apartment", id: "1")
 				let cell = FacilityTableViewCell()
@@ -51,7 +47,7 @@ class FacilityViewControllerTests: XCTestCase {
 				viewController.handleOptionSelection(option, cell: cell)
 
 				// Then
-				XCTAssertTrue(viewModel.toggleOptionSelectionCalled)
+				XCTAssertTrue(viewModel.selectOptionCalled)
 				XCTAssertTrue(cell.isCellSelected)
 		}
 
@@ -61,7 +57,7 @@ class FacilityViewControllerTests: XCTestCase {
 				viewModel.selectedOptions = [Exclusion(facilityID: "1", optionsID: "1")]
 
 				// When
-				let isSelected = viewController.viewModel.isOptionSelected(option)
+				let isSelected = viewController.viewModel.selectedOptions.contains { $0.optionsID == option.id }
 
 				// Then
 				XCTAssertTrue(isSelected)

@@ -5,70 +5,90 @@
 //  Created by Ayodeji Ayankola on 28/06/2023.
 //
 
+
+import Foundation
+
 protocol FacilityViewModelProtocol {
-	var facilityData: FacilityData? { get }
-	var error: APIError? { get }
-	var selectedOptions: [Exclusion] { get }
-	
-	func fetchFacilities(completion: @escaping () -> Void)
-	func toggleOptionSelection(_ option: Option)
-	func isOptionSelected(_ option: Option) -> Bool
+		var facilities: [Facility] { get }
+		var selectedOptions: [Exclusion] { get set }
+		var conflictingOptions: [Exclusion]? { get }
+		var filteredFacilities: [Facility] { get }
+		
+		func fetchFacilities(completion: @escaping (Result<Void, Error>) -> Void)
+		func selectOption(_ option: Option)
+		func deselectOption(_ option: Option)
 }
 
 class FacilityViewModel: FacilityViewModelProtocol {
-	private let facilityService: FacilitySelectorApi
-	
-	var facilityData: FacilityData?
-	var error: APIError?
-	var selectedOptions: [Exclusion] = []
-	
-	init(facilityService: FacilitySelectorApi = FacilitySelectorApi()) {
-		self.facilityService = facilityService
-	}
-	
-	func toggleOptionSelection(_ option: Option) {
-		guard let facilityID = facilityData?.facilities.first(where: { $0.options.contains { $0.id == option.id } })?.facilityID else {
-			return
+		private let facilityService: FacilitySelectorApi
+		private var facilityData: FacilityData?
+		
+		var facilities: [Facility] {
+				return facilityData?.facilities ?? []
 		}
 		
-		let exclusion = Exclusion(facilityID: facilityID, optionsID: option.id)
+		var selectedOptions: [Exclusion] = []
 		
-		if let index = selectedOptions.firstIndex(where: { $0.facilityID == facilityID }) {
-			selectedOptions.remove(at: index)
-		} else {
-			selectedOptions.append(exclusion)
-		}
-	}
-	
-	func toggleOptionSelection(_ exclusion: Exclusion) {
-			if let index = selectedOptions.firstIndex(where: { $0 == exclusion }) {
-					selectedOptions.remove(at: index)
-			} else {
-					selectedOptions.append(exclusion)
-			}
-	}
-
-	
-	func isOptionSelected(_ option: Option) -> Bool {
-		guard let facilityID = facilityData?.facilities.first(where: { $0.options.contains { $0.id == option.id } })?.facilityID else {
-			return false
+		var conflictingOptions: [Exclusion]? {
+				let selectedOptionIDs = selectedOptions.map { $0.optionsID }
+				
+				let conflictingOptions = facilityData?.exclusions
+						.flatMap { $0 }
+						.filter { exclusion in
+								selectedOptionIDs.contains(exclusion.optionsID)
+						}
+				
+				return conflictingOptions
 		}
 		
-		return selectedOptions.contains(where: { $0.facilityID == facilityID })
-	}
-	
-	func fetchFacilities(completion: @escaping () -> Void) {
-		facilityService.fetchFacilities { [weak self] result in
-			switch result {
-			case .success(let data):
-				self?.facilityData = data
-				self?.error = nil
-			case .failure(let error):
-				self?.facilityData = nil
-				self?.error = error
-			}
-			
-			completion()
+		var filteredFacilities: [Facility] {
+				guard let facilityData = facilityData else { return [] }
+				
+				let selectedOptionIDs = selectedOptions.map { $0.optionsID }
+				
+				let filteredOptions = facilityData.exclusions
+						.flatMap { $0 }
+						.filter { !selectedOptionIDs.contains($0.optionsID) }
+				
+				return facilityData.facilities.map { facility in
+						let filteredOptionsForFacility = facility.options.filter { option in
+								!filteredOptions.contains { $0.facilityID == facility.facilityID && $0.optionsID == option.id }
+						}
+						
+						return Facility(facilityID: facility.facilityID, name: facility.name, options: filteredOptionsForFacility)
+				}
 		}
-	}
+		
+		init(facilityService: FacilitySelectorApi = FacilitySelectorApi()) {
+				self.facilityService = facilityService
+		}
+		
+		func fetchFacilities(completion: @escaping (Result<Void, Error>) -> Void) {
+				facilityService.fetchFacilities { [weak self] result in
+						switch result {
+						case .success(let facilityData):
+								self?.facilityData = facilityData
+								completion(.success(()))
+						case .failure(let error):
+								completion(.failure(error))
+						}
+				}
+		}
+		
+		func selectOption(_ option: Option) {
+				let exclusion = Exclusion(facilityID: "", optionsID: option.id)
+				
+				guard !selectedOptions.contains(exclusion) else {
+						return
+				}
+				
+				selectedOptions.append(exclusion)
+		}
+		
+		func deselectOption(_ option: Option) {
+				let exclusion = Exclusion(facilityID: "", optionsID: option.id)
+				
+				selectedOptions.removeAll { $0 == exclusion }
+		}
 }
+
