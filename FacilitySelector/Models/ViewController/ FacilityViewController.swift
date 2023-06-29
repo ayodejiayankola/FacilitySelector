@@ -11,7 +11,7 @@ class FacilityViewController: UIViewController, UITableViewDataSource, UITableVi
 	
 	@IBOutlet weak var tableView: UITableView!
 	
-	private var viewModel: FacilityViewModelProtocol
+	internal private(set) var viewModel: FacilityViewModelProtocol
 	
 	var facilityData: FacilityData?
 	
@@ -25,12 +25,18 @@ class FacilityViewController: UIViewController, UITableViewDataSource, UITableVi
 		super.init(coder: coder)
 	}
 	
+
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		tableView.dataSource = self
 		tableView.delegate = self
 		fetchFacilities()
 	}
+	
+	func getViewModel() -> FacilityViewModelProtocol {
+			 return viewModel
+	 }
+	
 	
 	func fetchFacilities() {
 		viewModel.fetchFacilities { [weak self] in
@@ -80,35 +86,37 @@ class FacilityViewController: UIViewController, UITableViewDataSource, UITableVi
 	}
 	
 	
-	private func handleOptionSelection(_ option: Option, cell: FacilityTableViewCell) {
-		let isCellSelected = cell.isCellSelected
-		
-		if isCellSelected {
-			viewModel.toggleOptionSelection(option)
-			cell.isCellSelected = false
-		} else {
-			let conflictingOptions = viewModel.selectedOptions.filter { exclusion in
-				return (exclusion.facilityID == option.id) &&
-				(exclusion.optionsID != option.id)
-			}
-			
-			if conflictingOptions.isEmpty {
-				if option.id == "1" {
-					deselectOptionWithID("2")
-				} else if option.id == "3" {
-					if option.id == "12" {
-						deselectOptionWithID("7")
-					} else if option.id == "7" {
-						deselectOptionWithID("12") 
-					}
-				}
-				
-				viewModel.toggleOptionSelection(option)
-				cell.isCellSelected = true
+
+	internal func handleOptionSelection(_ option: Option, cell: FacilityTableViewCell) {
+			// Extracted logic from private method
+			let isCellSelected = cell.isCellSelected
+
+			if isCellSelected {
+					viewModel.toggleOptionSelection(option)
+					cell.isCellSelected = false
 			} else {
-				showAlert(for: conflictingOptions.first!)
+					let conflictingOptions = viewModel.selectedOptions.filter { exclusion in
+							return (exclusion.facilityID == option.id) &&
+									(exclusion.optionsID != option.id)
+					}
+
+					if conflictingOptions.isEmpty {
+							if option.id == "1" {
+									deselectOptionWithID("2")
+							} else if option.id == "3" {
+									if option.id == "12" {
+											deselectOptionWithID("7")
+									} else if option.id == "7" {
+											deselectOptionWithID("12")
+									}
+							}
+
+							viewModel.toggleOptionSelection(option)
+							cell.isCellSelected = true
+					} else {
+							showAlert(for: conflictingOptions.first!)
+					}
 			}
-		}
 	}
 	
 	private func deselectOptionWithID(_ optionID: String) {

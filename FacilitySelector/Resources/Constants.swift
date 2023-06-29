@@ -6,5 +6,5 @@
 //
 
 struct Constants {
-	static let apiBaseURL = "https://my-json-server.typicode.com"
+	static let apiBaseURL = "https://my-json-server.typicode.com/iranjith4/ad-assignment"
 }

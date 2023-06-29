@@ -1,5 +1,5 @@
 # FacilitySelector
-An iOS app that displays information aboutthe list of facilities and their options from An Api with the exclusion condition, so that users cannot select from the exclusions combinations.. Built with Swift 5, UIKit, and MVVM architecture
+An iOS app that displays information about the list of facilities and their options from an API with the exclusion condition, so that users cannot select from the exclusion combinations. Built with Swift 5, UIKit, and MVVM architecture.
 
 # iOS App - README
 
@@ -27,7 +27,7 @@ The key files and their interactions in the app are as follows:
 
 - **HTTPMethod.swift**: This file defines an enumeration of HTTP methods used for making API requests, such as GET, POST, PUT, and DELETE.
 
-- **APIError.swift**: This file defines an enumeration of API errors that can occur during API interactions, such as invalid URL, invalid response, decoding error, and request failure.
+- **APIError.swift**: This file defines an enumeration of API errors that can occur during API interactions, such as an invalid URL, invalid response, decoding error, and request failure.
 
 - **Constants.swift**: This file defines constants used in the app, including the base URL for the API.
 
@@ -40,6 +40,19 @@ The key files and their interactions in the app are as follows:
 - **API.swift**: This file implements the API protocol and handles API requests using URLSession. It includes a generic implementation that can be used with different response types.
 
 - **FacilitySelectorApi.swift**: This file defines the FacilitySelectorApi class, which acts as a wrapper for the API service. It provides a method for fetching facility data using the API.
+
+- **FacilityViewControllerTests.swift**: This file contains unit tests for the FacilityViewController class.
+
+- **FacilityViewModelTests.swift**: This file contains unit tests for the FacilityViewModel class.
+
+- **MockURLSession.swift**: This file defines a mock URL session for testing network requests.
+
+- **MockURLProtocol.swift**: This file defines a mock URL protocol for testing network requests.
+
+- **MockFacilityViewModel.swift**: This file defines a mock facility view model for testing the FacilityViewController.
+
+- **MockFacilityService.swift**: This file defines a mock facility service for testing the FacilitySelectorApi.
+
 
 ## Features
 

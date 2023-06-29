@@ -15,7 +15,7 @@ class FacilitySelectorApi {
 	}
 	
 	func fetchFacilities(completion: @escaping (Result<FacilityData, APIError>) -> Void) {
-		api.request(endpoint: "iranjith4/ad-assignment/db", method: .get, completion: completion)
+		api.request(endpoint: "db", method: .get, completion: completion)
 	}
 }
 
