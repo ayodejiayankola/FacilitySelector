@@ -1,8 +1,6 @@
 # FacilitySelector
 An iOS app that displays information about the list of facilities and their options from an API with the exclusion condition, so that users cannot select from the exclusion combinations. Built with Swift 5, UIKit, and MVVM architecture.
 
-# iOS App - README
-
 ## Introduction
 
 This is an iOS app called FacilitySelector that allows users to select facilities and options. It fetches facility data from an API and displays it in a table view. Users can select options and handle any exclusions based on the selected options.
