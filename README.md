@@ -84,9 +84,3 @@ Contributions to the FacilitySelector app are welcome. If you would like to cont
 
 The FacilitySelector app is released under the MIT License.
 
-## Acknowledgments
-
-We would like to acknowledge the following resources and contributors:
-
-- OpenAI GPT-3.5: The language model used to generate this documentation.
-- Swift documentation: The official Swift documentation provided by Apple.
