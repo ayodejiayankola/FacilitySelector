@@ -40,7 +40,6 @@ class FacilityViewControllerTests: XCTestCase {
 				XCTAssertTrue(viewModel.fetchFacilitiesCalled)
 				XCTAssertEqual(tableView?.numberOfSections, viewController.facilityData?.facilities.count)
 				XCTAssertTrue(tableView?.numberOfRows(inSection: 0) == viewModel.facilityData?.facilities[0].options.count)
-				// Additional assertions for table view data source methods
 		}
 
 		func testToggleOptionSelection() {
@@ -67,6 +66,4 @@ class FacilityViewControllerTests: XCTestCase {
 				// Then
 				XCTAssertTrue(isSelected)
 		}
-
-		// Additional test cases for other methods in FacilityViewController
 }
