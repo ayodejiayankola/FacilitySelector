@@ -17,6 +17,28 @@ The app follows the Model-View-ViewModel (MVVM) architecture pattern. Here is a 
 
 - **Model**: The model layer represents the data and data structures used in the app. It includes the API service, data models, and networking components.
 
+
+
+## Explanation for using MVVM Architecture
+
+The MVVM (Model-View-ViewModel) architecture was chosen for the FacilitySelector app due to its benefits in separating concerns, improving code organization, and facilitating testability. Here are the reasons behind choosing MVVM:
+
+- **Separation of Concerns**: MVVM helps in separating the responsibilities of different components. The model represents the data and business logic, the view handles the user interface, and the view model acts as a bridge between the model and the view. This separation allows for better code organization and maintainability.
+
+- **Testability**: MVVM promotes testability by decoupling the business logic from the user interface. The view model contains the majority of the app's logic, making it easier to write unit tests without dependencies on the view or the model. This separation of concerns enables isolated testing of the app's functionality.
+
+- **Reusability**: With MVVM, the view model can be reused across different views, allowing for better code reuse. This can be particularly useful when multiple views require similar data or behavior, reducing duplication of code.
+
+- **Binding and Observability**: MVVM facilitates the use of data binding and observability patterns. The view model exposes properties that the view can bind to, enabling automatic updates of the user interface when the underlying data changes. This improves the responsiveness and synchronization of the app's UI.
+
+- **Maintainability**: The separation of concerns and clear division of responsibilities in MVVM make the codebase more maintainable. It becomes easier to understand, modify, and extend the app's functionality without impacting other components.
+
+- **Support for Dependency Injection**: MVVM works well with dependency injection, which promotes loose coupling between components. This makes it easier to replace dependencies with mock objects during testing or introduce new functionalities without tightly coupling them to existing code.
+
+By adopting MVVM in the FacilitySelector app, we can achieve a clean and organized codebase, improve testability, enhance code reusability, and maintain a separation of concerns between different layers of the application.
+
+
+
 ## File Interactions
 
 The key files and their interactions in the app are as follows:
