@@ -80,7 +80,3 @@ Contributions to the FacilitySelector app are welcome. If you would like to cont
 5. Push your branch to your forked repository.
 6. Open a pull request, describing your changes and why they should be merged.
 
-## License
-
-The FacilitySelector app is released under the MIT License.
-
