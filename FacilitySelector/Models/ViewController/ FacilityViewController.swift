@@ -79,79 +79,53 @@ class FacilityViewController: UIViewController, UITableViewDataSource, UITableVi
 		return cell
 	}
 	
-//	private func handleOptionSelection(_ option: Option, cell: FacilityTableViewCell) {
-//			let isCellSelected = cell.isCellSelected
-//
-//			if isCellSelected {
-//					viewModel.toggleOptionSelection(option)
-//					cell.isCellSelected = false
-//			} else {
-//					let conflictingOptions = viewModel.selectedOptions.filter { exclusion in
-//							guard let facility = facilityData?.facilities.first(where: { facility in
-//									facility.options.contains { $0.id == exclusion.optionsID }
-//							}) else {
-//									return false
-//							}
-//						return facility.facilityID == option.id
-//					}
-//
-//					if conflictingOptions.isEmpty {
-//							viewModel.toggleOptionSelection(option)
-//							cell.isCellSelected = true
-//					} else {
-//							showAlert(for: conflictingOptions.first!)
-//					}
-//			}
-//	}
-
-	
 	
 	private func handleOptionSelection(_ option: Option, cell: FacilityTableViewCell) {
-			let isCellSelected = cell.isCellSelected
-
-			if isCellSelected {
-					viewModel.toggleOptionSelection(option)
-					cell.isCellSelected = false
-			} else {
-					let conflictingOptions = viewModel.selectedOptions.filter { exclusion in
-							return (exclusion.facilityID == option.id) &&
-										 (exclusion.optionsID != option.id)
-					}
-
-					if conflictingOptions.isEmpty {
-							if option.id == "1" {
-									deselectOptionWithID("2") // Deselect "1 to 3 rooms" if "Land" is selected
-							} else if option.id == "3" {
-									if option.id == "12" {
-											deselectOptionWithID("7") // Deselect "Garage" if "No Rooms" is selected
-									} else if option.id == "7" {
-											deselectOptionWithID("12") // Deselect "Garage" if "No Rooms" is selected
-									}
-							}
-							
-							viewModel.toggleOptionSelection(option)
-							cell.isCellSelected = true
-					} else {
-							showAlert(for: conflictingOptions.first!)
-					}
+		let isCellSelected = cell.isCellSelected
+		
+		if isCellSelected {
+			viewModel.toggleOptionSelection(option)
+			cell.isCellSelected = false
+		} else {
+			let conflictingOptions = viewModel.selectedOptions.filter { exclusion in
+				return (exclusion.facilityID == option.id) &&
+				(exclusion.optionsID != option.id)
 			}
-	}
-
-	private func deselectOptionWithID(_ optionID: String) {
-			if let option = viewModel.selectedOptions.first(where: { $0.optionsID == optionID }) {
-				if let facilityViewModel = viewModel as? FacilityViewModel,
-					 let facilityData = facilityViewModel.facilityData,
-					 let facility = facilityData.facilities.first(where: { $0.options.contains { $0.id == option.optionsID } }),
-					 let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? FacilityTableViewCell {
-						facilityViewModel.toggleOptionSelection(option)
-						cell.isCellSelected = false
+			
+			if conflictingOptions.isEmpty {
+				if option.id == "1" {
+					deselectOptionWithID("2")
+				} else if option.id == "3" {
+					if option.id == "12" {
+						deselectOptionWithID("7")
+					} else if option.id == "7" {
+						deselectOptionWithID("12") 
+					}
 				}
+				
+				viewModel.toggleOptionSelection(option)
+				cell.isCellSelected = true
+			} else {
+				showAlert(for: conflictingOptions.first!)
 			}
+		}
 	}
-
-
-
-	 
+	
+	private func deselectOptionWithID(_ optionID: String) {
+		if let option = viewModel.selectedOptions.first(where: { $0.optionsID == optionID }) {
+			if let facilityViewModel = viewModel as? FacilityViewModel,
+				 let facilityData = facilityViewModel.facilityData,
+				 let facility = facilityData.facilities.first(where: { $0.options.contains { $0.id == option.optionsID } }),
+				 let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? FacilityTableViewCell {
+				facilityViewModel.toggleOptionSelection(option)
+				cell.isCellSelected = false
+			}
+		}
+	}
+	
+	
+	
+	
 	private func showAlert(for exclusion: Exclusion) {
 		guard let windowScene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene,
 					let window = windowScene.windows.first,
@@ -168,27 +142,27 @@ class FacilityViewController: UIViewController, UITableViewDataSource, UITableVi
 }
 
 extension FacilityViewController {
-		func checkExclusion(for option: Option, in facilityViewController: FacilityViewController) -> Exclusion? {
-				guard let facilityData = facilityData else {
-						return nil
-				}
-				
-				let selectedExclusion = facilityData.exclusions.first { exclusions in
-						let conflictingOptions = exclusions.filter { exclusion in
-								exclusion.facilityID == option.id
-						}
-						
-						return conflictingOptions.allSatisfy { exclusion in
-								guard let conflictingOption = facilityData.facilities
-												.flatMap({ $0.options })
-												.first(where: { $0.id == exclusion.optionsID }) else {
-										return false
-								}
-								
-								return facilityViewController.viewModel.isOptionSelected(conflictingOption)
-						}
-				}
-				
-				return selectedExclusion?.first
+	func checkExclusion(for option: Option, in facilityViewController: FacilityViewController) -> Exclusion? {
+		guard let facilityData = facilityData else {
+			return nil
 		}
+		
+		let selectedExclusion = facilityData.exclusions.first { exclusions in
+			let conflictingOptions = exclusions.filter { exclusion in
+				exclusion.facilityID == option.id
+			}
+			
+			return conflictingOptions.allSatisfy { exclusion in
+				guard let conflictingOption = facilityData.facilities
+					.flatMap({ $0.options })
+					.first(where: { $0.id == exclusion.optionsID }) else {
+					return false
+				}
+				
+				return facilityViewController.viewModel.isOptionSelected(conflictingOption)
+			}
+		}
+		
+		return selectedExclusion?.first
+	}
 }
